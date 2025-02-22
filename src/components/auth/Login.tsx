@@ -19,6 +19,7 @@ interface LoginProps {
 }
 
 const Login = ({ isOpen, onClose }: LoginProps) => {
+  const [isSignIn, setIsSignIn] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +28,7 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
   const navigate = useNavigate();
 
   const validateForm = () => {
-    if (!name.trim()) {
+    if (!isSignIn && !name.trim()) {
       toast.error("Please enter your name");
       return false;
     }
@@ -39,21 +40,40 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
       toast.error("Please enter a password");
       return false;
     }
-    if (password.length < 6) {
+    if (!isSignIn && password.length < 6) {
       toast.error("Password must be at least 6 characters long");
       return false;
     }
     return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleSignIn = async () => {
     if (!validateForm()) return;
     
     setIsLoading(true);
     try {
-      // First, sign up the user
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      toast.success("Signed in successfully!");
+      onClose();
+      navigate("/projects");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to sign in");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSignUp = async () => {
+    if (!validateForm()) return;
+    
+    setIsLoading(true);
+    try {
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -64,28 +84,20 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
         },
       });
 
-      if (authError) {
-        throw authError;
-      }
+      if (authError) throw authError;
 
       if (authData.user) {
-        // Wait a moment for the session to be established
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Then create the user role using the established session
         const { error: roleError } = await supabase
           .from('user_roles')
-          .insert([
-            { 
-              user_id: authData.user.id, 
-              role: 'owner' 
-            }
-          ]);
+          .insert([{ 
+            user_id: authData.user.id, 
+            role: 'owner' 
+          }]);
 
         if (roleError) {
           console.error("Role creation error:", roleError);
-          // Even if role creation fails, we'll proceed with account creation
-          // The role can be assigned later by an administrator
           toast.error("Note: Role assignment failed, please contact support");
         }
 
@@ -100,20 +112,31 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSignIn) {
+      await handleSignIn();
+    } else {
+      await handleSignUp();
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <div className="absolute right-12 top-6">
           <button 
-            onClick={() => toast.info("Sign in coming soon!")} 
+            onClick={() => setIsSignIn(!isSignIn)} 
             className="text-sm text-gray-600 hover:text-purple-600 transition-colors"
           >
-            Already have an account? Sign In
+            {isSignIn ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
           </button>
         </div>
 
         <DialogHeader className="space-y-6">
-          <DialogTitle className="text-2xl font-bold">Create Account</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">
+            {isSignIn ? "Welcome Back" : "Create Account"}
+          </DialogTitle>
           <div className="flex justify-center items-center">
             <div className="w-24 h-24 bg-purple-50 rounded-full flex items-center justify-center">
               <ShieldCheck className="w-12 h-12 text-purple-600" />
@@ -124,20 +147,22 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
         <div className="flex gap-6">
           <div className="flex-1">
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium">
-                  Name
-                </label>
-                <Input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your full name"
-                  className="w-full"
-                  disabled={isLoading}
-                />
-              </div>
+              {!isSignIn && (
+                <div className="space-y-2">
+                  <label htmlFor="name" className="text-sm font-medium">
+                    Name
+                  </label>
+                  <Input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Enter your full name"
+                    className="w-full"
+                    disabled={isLoading}
+                  />
+                </div>
+              )}
 
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium">
@@ -164,8 +189,8 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Create a strong password"
-                    className="w-full pr-10"
+                    placeholder={isSignIn ? "Enter your password" : "Create a strong password"}
+                    className="w-full pr-10 transition-colors hover:border-purple-400"
                     disabled={isLoading}
                   />
                   <button
@@ -188,7 +213,9 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white transition-colors rounded-full py-6"
                 disabled={isLoading}
               >
-                {isLoading ? "Creating Account..." : "Create Account"}
+                {isLoading 
+                  ? (isSignIn ? "Signing In..." : "Creating Account...") 
+                  : (isSignIn ? "Sign In" : "Create Account")}
               </Button>
             </form>
           </div>
