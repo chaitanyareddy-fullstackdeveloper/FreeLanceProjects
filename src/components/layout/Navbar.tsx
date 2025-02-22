@@ -1,6 +1,11 @@
+
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import ContactInfo from "../contact/ContactInfo";
 
 const Navbar = () => {
+  const [showContact, setShowContact] = useState(false);
+
   return (
     <nav className="bg-neutral-100 min-h-[72px] w-full flex items-center justify-center px-16 max-md:px-5">
       <div className="flex w-full items-center gap-[40px_100px] justify-between flex-wrap">
@@ -54,7 +59,10 @@ const Navbar = () => {
             </div>
 
             <div className="relative group">
-              <button className="flex items-center gap-1 hover:text-gray-600 transition-colors">
+              <button 
+                onClick={() => setShowContact(true)}
+                className="flex items-center gap-1 hover:text-gray-600 transition-colors"
+              >
                 Contact Us
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets/8d558f9bb4764a5dac86741cae883290/fee1f4da4fbc0ac2471ce1f6c2ea6132c2a43490c7dcf7518142e53de96c1a55?placeholderIfAbsent=true"
@@ -66,6 +74,7 @@ const Navbar = () => {
           </nav>
         </div>
       </div>
+      <ContactInfo isOpen={showContact} onClose={() => setShowContact(false)} />
     </nav>
   );
 };
