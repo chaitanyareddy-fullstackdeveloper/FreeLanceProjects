@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -103,8 +103,22 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader>
+        <div className="absolute right-12 top-6">
+          <button 
+            onClick={() => toast.info("Sign in coming soon!")} 
+            className="text-sm text-gray-600 hover:text-purple-600 transition-colors"
+          >
+            Already have an account? Sign In
+          </button>
+        </div>
+
+        <DialogHeader className="space-y-6">
           <DialogTitle className="text-2xl font-bold">Create Account</DialogTitle>
+          <div className="flex justify-center items-center">
+            <div className="w-24 h-24 bg-purple-50 rounded-full flex items-center justify-center">
+              <ShieldCheck className="w-12 h-12 text-purple-600" />
+            </div>
+          </div>
         </DialogHeader>
 
         <div className="flex gap-6">
