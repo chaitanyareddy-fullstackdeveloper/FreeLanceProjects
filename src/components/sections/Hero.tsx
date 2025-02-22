@@ -1,4 +1,10 @@
+
+import { useState } from "react";
+import Login from "../auth/Login";
+
 const Hero = () => {
+  const [showLogin, setShowLogin] = useState(false);
+
   return (
     <section className="bg-white flex w-full items-center gap-[40px_80px] overflow-hidden flex-wrap px-16 py-28 max-md:px-5 max-md:py-[100px]">
       <div className="self-stretch flex min-w-60 flex-col items-stretch flex-1 shrink basis-[0%] my-auto max-md:max-w-full">
@@ -12,7 +18,10 @@ const Hero = () => {
           </p>
         </div>
         <div className="flex gap-4 text-base font-normal mt-8">
-          <button className="self-stretch bg-black border gap-2 text-white px-6 py-3 border-black border-solid hover:bg-gray-800 transition-colors">
+          <button
+            onClick={() => setShowLogin(true)}
+            className="self-stretch bg-black border gap-2 text-white px-6 py-3 border-black border-solid hover:bg-gray-800 transition-colors"
+          >
             Get Started
           </button>
           <button className="self-stretch border gap-2 text-black px-6 py-3 border-black border-solid hover:bg-gray-100 transition-colors">
@@ -26,6 +35,7 @@ const Hero = () => {
         className="aspect-[0.96] object-contain w-full self-stretch min-w-60 flex-1 shrink basis-[0%] my-auto max-md:max-w-full"
         alt="Hero illustration"
       />
+      <Login isOpen={showLogin} onClose={() => setShowLogin(false)} />
     </section>
   );
 };
