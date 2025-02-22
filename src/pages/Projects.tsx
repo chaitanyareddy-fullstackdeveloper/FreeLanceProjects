@@ -259,32 +259,39 @@ const Projects = () => {
   );
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
-      <div className="flex items-center mb-6">
-        <Button
-          variant="ghost"
-          className="flex items-center gap-2 hover:bg-gray-100"
-          onClick={() => navigate('/')}
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Home
-        </Button>
-      </div>
+    <div 
+      className="min-h-screen bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: 'url("https://i.pinimg.com/736x/98/3f/fc/983ffcc161bec18b0c4dd722fd0bc99c.jpg")'
+      }}
+    >
+      <div className="container mx-auto py-8 space-y-8 bg-white/90 min-h-screen backdrop-blur-sm">
+        <div className="flex items-center mb-6">
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 hover:bg-gray-100"
+            onClick={() => navigate('/')}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Button>
+        </div>
 
-      {userRole === 'owner' && (
-        <>
-          {renderMyProjects()}
-          {renderCurrentProjects()}
-          {renderCompletedProjects()}
-        </>
-      )}
-      {userRole === 'company' && (
-        <>
-          {renderAvailableProjects()}
-          {renderCurrentProjects()}
-          {renderCompletedProjects()}
-        </>
-      )}
+        {userRole === 'owner' && (
+          <>
+            {renderMyProjects()}
+            {renderCurrentProjects()}
+            {renderCompletedProjects()}
+          </>
+        )}
+        {userRole === 'company' && (
+          <>
+            {renderAvailableProjects()}
+            {renderCurrentProjects()}
+            {renderCompletedProjects()}
+          </>
+        )}
+      </div>
     </div>
   );
 };
