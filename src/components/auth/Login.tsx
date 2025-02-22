@@ -53,7 +53,8 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
     
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signUp({
+      // First, sign up the user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -63,18 +64,29 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
         },
       });
 
-      if (error) {
-        throw error;
+      if (authError) {
+        throw authError;
       }
 
-      if (data.user) {
-        // Create a default user role
+      if (authData.user) {
+        // Wait a moment for the session to be established
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Then create the user role using the established session
         const { error: roleError } = await supabase
           .from('user_roles')
-          .insert([{ user_id: data.user.id, role: 'owner' }]);
+          .insert([
+            { 
+              user_id: authData.user.id, 
+              role: 'owner' 
+            }
+          ]);
 
         if (roleError) {
-          throw roleError;
+          console.error("Role creation error:", roleError);
+          // Even if role creation fails, we'll proceed with account creation
+          // The role can be assigned later by an administrator
+          toast.error("Note: Role assignment failed, please contact support");
         }
 
         toast.success("Account created successfully!");
