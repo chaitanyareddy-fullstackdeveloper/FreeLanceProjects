@@ -19,7 +19,7 @@ interface LoginProps {
 }
 
 const Login = ({ isOpen, onClose }: LoginProps) => {
-  const [isSignIn, setIsSignIn] = useState(false);
+  const [isSignIn, setIsSignIn] = useState(true); // Changed to true to show sign in by default
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
