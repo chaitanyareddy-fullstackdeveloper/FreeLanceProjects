@@ -2,9 +2,17 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import ContactInfo from "../contact/ContactInfo";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { RocketIcon, GraduationCapIcon, CheckCircleIcon } from "lucide-react";
 
 const Navbar = () => {
   const [showContact, setShowContact] = useState(false);
+  const [showServices, setShowServices] = useState(false);
 
   return (
     <nav className="bg-neutral-100 min-h-[72px] w-full flex items-center justify-center px-16 max-md:px-5">
@@ -29,12 +37,12 @@ const Navbar = () => {
             <Link to="/about" className="hover:text-gray-600 transition-colors">
               About Us
             </Link>
-            <Link
-              to="/services"
+            <button
+              onClick={() => setShowServices(true)}
               className="hover:text-gray-600 transition-colors"
             >
               Our Services
-            </Link>
+            </button>
 
             <div className="relative group">
               <button className="flex items-center gap-1 hover:text-gray-600 transition-colors">
@@ -75,6 +83,76 @@ const Navbar = () => {
         </div>
       </div>
       <ContactInfo isOpen={showContact} onClose={() => setShowContact(false)} />
+
+      {/* Services Dialog */}
+      <Dialog open={showServices} onOpenChange={setShowServices}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-center">
+              Empowering Startups & Verified Graduates
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-4 space-y-6">
+            <p className="text-center text-gray-600">
+              We bridge the gap between startups looking for skilled talent and verified graduates seeking real-world experience. Our platform ensures a win-win collaboration where innovation meets expertise.
+            </p>
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-semibold mb-4">How It Works</h3>
+                
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="flex items-center gap-2 font-semibold text-lg mb-3">
+                      <RocketIcon className="text-purple-500" />
+                      For Startups
+                    </h4>
+                    <ul className="list-disc pl-6 space-y-2 text-gray-600">
+                      <li>Submit your project requirements.</li>
+                      <li>Get matched with skilled, verified graduates.</li>
+                      <li>Receive high-quality work at competitive rates.</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="flex items-center gap-2 font-semibold text-lg mb-3">
+                      <GraduationCapIcon className="text-purple-500" />
+                      For Graduates
+                    </h4>
+                    <ul className="list-disc pl-6 space-y-2 text-gray-600">
+                      <li>Access real-world projects from innovative startups.</li>
+                      <li>Gain experience, build your portfolio, and get paid.</li>
+                      <li>Work on exciting challenges and grow your career.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-4">Why Choose Us?</h3>
+                <ul className="space-y-2">
+                  <li className="flex items-center gap-2 text-gray-600">
+                    <CheckCircleIcon className="text-green-500" size={20} />
+                    Verified and skilled graduates.
+                  </li>
+                  <li className="flex items-center gap-2 text-gray-600">
+                    <CheckCircleIcon className="text-green-500" size={20} />
+                    Cost-effective solutions for startups.
+                  </li>
+                  <li className="flex items-center gap-2 text-gray-600">
+                    <CheckCircleIcon className="text-green-500" size={20} />
+                    A seamless collaboration platform.
+                  </li>
+                </ul>
+              </div>
+
+              <p className="text-center font-semibold text-lg text-purple-600">
+                Start your journey with us today!
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </nav>
   );
 };
