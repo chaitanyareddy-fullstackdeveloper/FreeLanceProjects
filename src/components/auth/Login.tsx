@@ -101,9 +101,12 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
           toast.error("Note: Role assignment failed, please contact support");
         }
 
-        toast.success("Account created successfully!");
-        onClose();
-        navigate("/projects");
+        toast.success("Account created! Please sign in with your credentials.");
+        // Reset form and switch to sign in mode
+        setName("");
+        setEmail("");
+        setPassword("");
+        setIsSignIn(true);
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to create account");
