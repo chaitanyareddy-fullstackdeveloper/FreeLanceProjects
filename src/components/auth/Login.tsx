@@ -84,7 +84,16 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
         },
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        // Check if the error is because the user already exists
+        if (authError.message.toLowerCase().includes('email already registered')) {
+          toast.info("Email already registered. Please sign in instead.");
+          setIsSignIn(true);
+          setName("");
+          return;
+        }
+        throw authError;
+      }
 
       if (authData.user) {
         await new Promise(resolve => setTimeout(resolve, 1000));
