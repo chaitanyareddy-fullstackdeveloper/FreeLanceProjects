@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Projects from "./pages/Projects";
+import ProjectDetails from "./pages/ProjectDetails";
 import { useEffect, useState } from "react";
 import { supabase } from "./integrations/supabase/client";
 
@@ -45,6 +46,10 @@ const App = () => {
             <Route
               path="/projects"
               element={session ? <Projects /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/projects/:id"
+              element={session ? <ProjectDetails /> : <Navigate to="/" />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

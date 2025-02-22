@@ -1,32 +1,23 @@
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { PlusCircle, Star } from "lucide-react";
+import { PlusCircle, Star, ArrowRight } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Database } from "@/integrations/supabase/types";
 
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  detailed_description: string | null;
-  status: 'draft' | 'open' | 'in_progress' | 'completed' | 'cancelled';
-  budget: number;
-  deadline: string;
-}
-
-interface Review {
-  rating: number;
-  comment: string;
-  created_at: string;
-}
+type Project = Database['public']['Tables']['projects']['Row'];
+type UserRole = Database['public']['Tables']['user_roles']['Row'];
+type Review = Database['public']['Tables']['reviews']['Row'];
 
 const Projects = () => {
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const [userRole, setUserRole] = useState<UserRole['role'] | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [reviews, setReviews] = useState<{ [key: string]: Review[] }>({});
   const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
@@ -96,12 +87,19 @@ const Projects = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { error } = await supabase.from('projects').insert({
-      ...newProject,
-      owner_id: user.id,
+    const projectData = {
+      title: newProject.title,
+      description: newProject.description,
+      detailed_description: newProject.detailed_description,
       budget: parseFloat(newProject.budget),
-      status: 'draft'
-    });
+      deadline: newProject.deadline,
+      owner_id: user.id,
+      status: 'draft' as const
+    };
+
+    const { error } = await supabase
+      .from('projects')
+      .insert(projectData);
 
     if (error) {
       toast.error("Failed to create project");
@@ -168,9 +166,16 @@ const Projects = () => {
         </Dialog>
       </div>
       {projects.map(project => (
-        <Card key={project.id}>
+        <Card 
+          key={project.id} 
+          className="cursor-pointer hover:border-primary transition-colors"
+          onClick={() => navigate(`/projects/${project.id}`)}
+        >
           <CardHeader>
-            <CardTitle>{project.title}</CardTitle>
+            <div className="flex justify-between items-center">
+              <CardTitle>{project.title}</CardTitle>
+              <ArrowRight className="h-5 w-5" />
+            </div>
             <div className="text-sm text-muted-foreground">Status: {project.status}</div>
           </CardHeader>
           <CardContent>
@@ -191,9 +196,16 @@ const Projects = () => {
       {projects
         .filter(project => project.status === 'open')
         .map(project => (
-          <Card key={project.id}>
+          <Card 
+            key={project.id}
+            className="cursor-pointer hover:border-primary transition-colors"
+            onClick={() => navigate(`/projects/${project.id}`)}
+          >
             <CardHeader>
-              <CardTitle>{project.title}</CardTitle>
+              <div className="flex justify-between items-center">
+                <CardTitle>{project.title}</CardTitle>
+                <ArrowRight className="h-5 w-5" />
+              </div>
             </CardHeader>
             <CardContent>
               <p>{project.description}</p>
@@ -201,7 +213,6 @@ const Projects = () => {
                 <p>Budget: ${project.budget}</p>
                 <p>Deadline: {new Date(project.deadline).toLocaleDateString()}</p>
               </div>
-              <Button className="mt-4">Apply for Project</Button>
             </CardContent>
           </Card>
         ))}
@@ -214,9 +225,16 @@ const Projects = () => {
       {projects
         .filter(project => project.status === 'completed')
         .map(project => (
-          <Card key={project.id}>
+          <Card 
+            key={project.id}
+            className="cursor-pointer hover:border-primary transition-colors"
+            onClick={() => navigate(`/projects/${project.id}`)}
+          >
             <CardHeader>
-              <CardTitle>{project.title}</CardTitle>
+              <div className="flex justify-between items-center">
+                <CardTitle>{project.title}</CardTitle>
+                <ArrowRight className="h-5 w-5" />
+              </div>
             </CardHeader>
             <CardContent>
               <p>{project.description}</p>
