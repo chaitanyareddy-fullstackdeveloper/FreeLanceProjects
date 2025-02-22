@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { PlusCircle, ArrowRight } from "lucide-react";
+import { PlusCircle, ArrowRight, ArrowLeft } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
 
 type Project = Database['public']['Tables']['projects']['Row'];
@@ -260,6 +260,17 @@ const Projects = () => {
 
   return (
     <div className="container mx-auto py-8 space-y-8">
+      <div className="flex items-center mb-6">
+        <Button
+          variant="ghost"
+          className="flex items-center gap-2 hover:bg-gray-100"
+          onClick={() => navigate('/')}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Home
+        </Button>
+      </div>
+
       {userRole === 'owner' && (
         <>
           {renderMyProjects()}
