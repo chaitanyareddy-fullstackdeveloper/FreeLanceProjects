@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -159,127 +158,119 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <div className="absolute right-12 top-6">
-          {!isResetPassword && (
-            <button 
-              onClick={() => setIsSignIn(!isSignIn)} 
-              className="text-sm text-gray-600 hover:text-purple-600 transition-colors"
-            >
-              {isSignIn ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
-            </button>
-          )}
-        </div>
-
-        <DialogHeader className="space-y-6">
-          <DialogTitle className="text-2xl font-bold">
-            {isResetPassword ? "Reset Password" : (isSignIn ? "Welcome Back" : "Create Account")}
+      <DialogContent className="sm:max-w-[400px] p-6">
+        <DialogHeader className="mb-4">
+          <DialogTitle className="text-xl font-semibold text-center">
+            {isResetPassword ? "Reset Password" : (isSignIn ? "Sign In" : "Create Account")}
           </DialogTitle>
-          <div className="flex justify-center items-center">
-            <div className="w-24 h-24 bg-purple-50 rounded-full flex items-center justify-center">
-              <ShieldCheck className="w-12 h-12 text-purple-600" />
-            </div>
-          </div>
         </DialogHeader>
 
-        <div className="flex gap-6">
-          <div className="flex-1">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {!isSignIn && !isResetPassword && (
-                <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-medium">
-                    Name
-                  </label>
-                  <Input
-                    id="name"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter your full name"
-                    className="w-full"
-                    disabled={isLoading}
-                  />
-                </div>
-              )}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {!isSignIn && !isResetPassword && (
+            <div className="space-y-2">
+              <label htmlFor="name" className="text-sm font-medium">
+                Name
+              </label>
+              <Input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your full name"
+                className="w-full"
+                disabled={isLoading}
+              />
+            </div>
+          )}
 
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">
-                  Email
-                </label>
+          <div className="space-y-2">
+            <label htmlFor="email" className="text-sm font-medium">
+              Email
+            </label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email address"
+              className="w-full"
+              disabled={isLoading}
+            />
+          </div>
+
+          {!isResetPassword && (
+            <div className="space-y-2">
+              <label htmlFor="password" className="text-sm font-medium">
+                Password
+              </label>
+              <div className="relative">
                 <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email address"
-                  className="w-full"
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder={isSignIn ? "Enter your password" : "Create a strong password"}
+                  className="w-full pr-10"
                   disabled={isLoading}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  disabled={isLoading}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
               </div>
+            </div>
+          )}
 
-              {!isResetPassword && (
-                <div className="space-y-2">
-                  <label htmlFor="password" className="text-sm font-medium">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder={isSignIn ? "Enter your password" : "Create a strong password"}
-                      className="w-full pr-10 transition-colors hover:border-purple-400"
-                      disabled={isLoading}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                      disabled={isLoading}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5" />
-                      ) : (
-                        <Eye className="h-5 w-5" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              )}
+          {isSignIn && !isResetPassword && (
+            <button
+              type="button"
+              onClick={() => setIsResetPassword(true)}
+              className="text-sm text-gray-600 hover:text-gray-800"
+            >
+              Forgot your password?
+            </button>
+          )}
 
-              {isSignIn && !isResetPassword && (
-                <button
-                  type="button"
-                  onClick={() => setIsResetPassword(true)}
-                  className="text-sm text-purple-600 hover:text-purple-700 transition-colors"
-                >
-                  Forgot your password?
-                </button>
-              )}
+          <Button
+            type="submit"
+            className="w-full bg-gray-900 hover:bg-gray-800 text-white"
+            disabled={isLoading}
+          >
+            {isLoading 
+              ? (isResetPassword ? "Sending..." : (isSignIn ? "Signing In..." : "Creating..."))
+              : (isResetPassword ? "Send Reset Link" : (isSignIn ? "Sign In" : "Create Account"))}
+          </Button>
 
-              <Button
-                type="submit"
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white transition-colors rounded-full py-6"
-                disabled={isLoading}
-              >
-                {isLoading 
-                  ? (isResetPassword ? "Sending Reset Link..." : (isSignIn ? "Signing In..." : "Creating Account..."))
-                  : (isResetPassword ? "Send Reset Link" : (isSignIn ? "Sign In" : "Create Account"))}
-              </Button>
-
-              {isResetPassword && (
-                <button
-                  type="button"
-                  onClick={() => setIsResetPassword(false)}
-                  className="w-full text-sm text-gray-600 hover:text-purple-600 transition-colors mt-2"
-                >
-                  Back to Sign In
-                </button>
-              )}
-            </form>
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={() => {
+                if (isResetPassword) {
+                  setIsResetPassword(false);
+                } else {
+                  setIsSignIn(!isSignIn);
+                }
+              }}
+              className="text-sm text-gray-600 hover:text-gray-800"
+            >
+              {isResetPassword 
+                ? "Back to Sign In"
+                : (isSignIn 
+                    ? "Don't have an account? Sign Up" 
+                    : "Already have an account? Sign In"
+                  )
+              }
+            </button>
           </div>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
