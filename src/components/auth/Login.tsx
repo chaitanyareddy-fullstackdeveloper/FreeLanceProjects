@@ -68,9 +68,18 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
       }
 
       if (data.user) {
+        // Create a default user role
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert([{ user_id: data.user.id, role: 'owner' }]);
+
+        if (roleError) {
+          throw roleError;
+        }
+
         toast.success("Account created successfully!");
         onClose();
-        navigate("/");
+        navigate("/projects");
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to create account");
@@ -83,18 +92,10 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <div className="flex justify-between items-center">
-            <DialogTitle className="text-2xl font-bold">Create Account</DialogTitle>
-            <button
-              onClick={() => console.log("Switch to sign in")}
-              className="text-sm text-purple-600 hover:text-purple-700 transition-colors"
-            >
-              Already have an account? Sign In
-            </button>
-          </div>
+          <DialogTitle className="text-2xl font-bold">Create Account</DialogTitle>
         </DialogHeader>
 
-        <div className="flex gap-6 mt-6">
+        <div className="flex gap-6">
           <div className="flex-1">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
@@ -164,14 +165,6 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
                 {isLoading ? "Creating Account..." : "Create Account"}
               </Button>
             </form>
-          </div>
-
-          <div className="hidden md:block w-1/2">
-            <img
-              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=800&q=80"
-              alt="Security Illustration"
-              className="w-full h-full object-cover rounded-lg"
-            />
           </div>
         </div>
       </DialogContent>

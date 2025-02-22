@@ -4,25 +4,21 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star } from "lucide-react";
 import { toast } from "sonner";
 import { Database } from "@/integrations/supabase/types";
 
 type Project = Database['public']['Tables']['projects']['Row'];
-type Review = Database['public']['Tables']['reviews']['Row'];
 
 const ProjectDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
-  const [reviews, setReviews] = useState<Review[]>([]);
   const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     fetchUserRole();
     if (id) {
       fetchProjectDetails(id);
-      fetchProjectReviews(id);
     }
   }, [id]);
 
@@ -55,17 +51,6 @@ const ProjectDetails = () => {
     }
 
     setProject(project);
-  };
-
-  const fetchProjectReviews = async (projectId: string) => {
-    const { data: reviews } = await supabase
-      .from('reviews')
-      .select()
-      .eq('project_id', projectId);
-
-    if (reviews) {
-      setReviews(reviews);
-    }
   };
 
   const handleApplyForProject = async () => {
@@ -105,7 +90,7 @@ const ProjectDetails = () => {
         Back to Projects
       </Button>
       
-      <Card className="mb-6">
+      <Card>
         <CardHeader>
           <CardTitle>{project.title}</CardTitle>
           <div className="text-sm text-muted-foreground">Status: {project.status}</div>
@@ -141,29 +126,6 @@ const ProjectDetails = () => {
           </div>
         </CardContent>
       </Card>
-
-      {project.status === 'completed' && reviews.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Reviews</h2>
-          <div className="space-y-4">
-            {reviews.map((review) => (
-              <Card key={review.id}>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-1 mb-2">
-                    {Array.from({ length: review.rating }).map((_, i) => (
-                      <Star 
-                        key={i} 
-                        className="h-4 w-4 fill-yellow-400 text-yellow-400" 
-                      />
-                    ))}
-                  </div>
-                  <p>{review.comment}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
