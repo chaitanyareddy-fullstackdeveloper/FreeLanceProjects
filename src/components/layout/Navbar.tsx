@@ -1,5 +1,5 @@
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ContactInfo from "../contact/ContactInfo";
 import {
@@ -13,12 +13,20 @@ import { RocketIcon, GraduationCapIcon, CheckCircleIcon } from "lucide-react";
 const Navbar = () => {
   const [showContact, setShowContact] = useState(false);
   const [showServices, setShowServices] = useState(false);
+  const navigate = useNavigate();
+
+  const handleHomeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate('/');
+    window.location.reload(); // Force reload to ensure proper state reset
+  };
 
   return (
     <nav className="bg-neutral-100 min-h-[72px] w-full flex items-center justify-center px-16 max-md:px-5">
       <div className="flex w-full items-center gap-[40px_100px] justify-between flex-wrap">
         <Link
           to="/"
+          onClick={handleHomeClick}
           className="bg-white h-10 flex items-center justify-center w-20"
         >
           <img
@@ -31,7 +39,11 @@ const Navbar = () => {
 
         <div className="flex min-w-60 items-center gap-8 text-base text-black font-normal">
           <nav className="flex min-w-60 items-center gap-8 flex-wrap">
-            <Link to="/" className="hover:text-gray-600 transition-colors">
+            <Link 
+              to="/" 
+              onClick={handleHomeClick}
+              className="hover:text-gray-600 transition-colors"
+            >
               Home
             </Link>
             <Link to="/about" className="hover:text-gray-600 transition-colors">
