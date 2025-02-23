@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +11,37 @@ import { PlusCircle, ArrowRight, ArrowLeft } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
 
 type Project = Database['public']['Tables']['projects']['Row'];
+
+// Sample projects for new users
+const sampleProjects: Omit<Project, 'id' | 'owner_id' | 'created_at' | 'updated_at'>[] = [
+  {
+    title: "Website Redesign Project",
+    description: "Complete redesign of an e-commerce website with modern UI/UX",
+    detailed_description: "Looking for experienced designers and developers to revamp our online store",
+    budget: 5000,
+    deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+    status: "open",
+    assigned_to: null
+  },
+  {
+    title: "Mobile App Development",
+    description: "Create a new fitness tracking mobile application",
+    detailed_description: "Develop a cross-platform mobile app for tracking workouts and nutrition",
+    budget: 8000,
+    deadline: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(), // 45 days from now
+    status: "open",
+    assigned_to: null
+  },
+  {
+    title: "Brand Identity Package",
+    description: "Design complete brand identity including logo and guidelines",
+    detailed_description: "Create a comprehensive brand package for a new startup",
+    budget: 3000,
+    deadline: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString(), // 20 days from now
+    status: "open",
+    assigned_to: null
+  }
+];
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -39,17 +69,55 @@ const Projects = () => {
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
       
       if (roleData) {
         setUserRole(roleData.role);
+      } else {
+        // If no role is found, this is a new user
+        // Show sample projects by not setting a role
+        setProjects(sampleProjects.map(project => ({
+          ...project,
+          id: Math.random().toString(36).substr(2, 9),
+          owner_id: 'sample',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })));
       }
     }
   };
 
   const fetchProjects = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) {
+      // If no user is logged in, show sample projects
+      setProjects(sampleProjects.map(project => ({
+        ...project,
+        id: Math.random().toString(36).substr(2, 9),
+        owner_id: 'sample',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })));
+      return;
+    }
+
+    const { data: roleData } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (!roleData) {
+      // If no role is found, show sample projects
+      setProjects(sampleProjects.map(project => ({
+        ...project,
+        id: Math.random().toString(36).substr(2, 9),
+        owner_id: 'sample',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })));
+      return;
+    }
 
     const { data: projects, error } = await supabase
       .from('projects')
@@ -97,6 +165,15 @@ const Projects = () => {
       budget: "",
       deadline: "",
     });
+  };
+
+  const handleBackClick = () => {
+    if (showCompleted) {
+      setShowCompleted(false);
+    } else {
+      navigate('/', { replace: true });
+      window.location.reload(); // Force a page reload to ensure proper state reset
+    }
   };
 
   const renderMyProjects = () => (
@@ -282,18 +359,12 @@ const Projects = () => {
           <Button
             variant="ghost"
             className="flex items-center gap-2 hover:bg-gray-100"
-            onClick={() => {
-              if (showCompleted) {
-                setShowCompleted(false);
-              } else {
-                navigate('/');
-              }
-            }}
+            onClick={handleBackClick}
           >
             <ArrowLeft className="h-4 w-4" />
             {showCompleted ? 'Back to Projects' : 'Back to Home'}
           </Button>
-          {!showCompleted && (
+          {!showCompleted && userRole && (
             <Button
               variant="outline"
               onClick={() => setShowCompleted(true)}
@@ -302,6 +373,40 @@ const Projects = () => {
             </Button>
           )}
         </div>
+
+        {!userRole && (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Sample Projects</h2>
+              <Button
+                variant="outline"
+                onClick={() => navigate('/')}
+              >
+                Sign Up to Post Projects
+              </Button>
+            </div>
+            {projects.map(project => (
+              <Card
+                key={project.id}
+                className="cursor-pointer hover:border-primary transition-colors"
+              >
+                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <CardTitle>{project.title}</CardTitle>
+                    <ArrowRight className="h-5 w-5" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p>{project.description}</p>
+                  <div className="mt-2">
+                    <p>Budget: ${project.budget}</p>
+                    <p>Deadline: {new Date(project.deadline).toLocaleDateString()}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
 
         {userRole === 'owner' && (
           <>

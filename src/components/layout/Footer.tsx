@@ -1,8 +1,12 @@
 
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
 
 const Footer = () => {
+  const [showContact, setShowContact] = useState(false);
+
   return (
     <footer className="bg-[rgba(235,235,235,1)] flex w-full flex-col overflow-hidden items-stretch px-16 py-20 max-md:px-5">
       <div className="self-center flex w-[493px] max-w-full flex-col items-center">
@@ -34,9 +38,12 @@ const Footer = () => {
           >
             Projects
           </Link>
-          <Link to="/contact" className="hover:text-gray-600 transition-colors">
+          <button 
+            onClick={() => setShowContact(true)}
+            className="hover:text-gray-600 transition-colors"
+          >
             Contact Us
-          </Link>
+          </button>
         </nav>
 
         {/* Social Media Icons */}
@@ -58,7 +65,7 @@ const Footer = () => {
             <Twitter size={24} />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/bijjam-venkata-chaitanya-kumar-reddy"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-600 hover:text-[#0A66C2] transition-colors"
@@ -101,6 +108,24 @@ const Footer = () => {
           </div>
         </div>
       </div>
+
+      <Dialog open={showContact} onOpenChange={setShowContact}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Contact Information</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="flex flex-col gap-2">
+              <p className="text-lg font-medium">Phone:</p>
+              <p className="text-gray-600">7981012359</p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <p className="text-lg font-medium">Email:</p>
+              <p className="text-gray-600">Chaitanyakumarreddy@gmail.com</p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </footer>
   );
 };
