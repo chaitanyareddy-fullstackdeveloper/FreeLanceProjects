@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -109,11 +110,12 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
           toast.error("Note: Role assignment failed, please contact support");
         }
 
-        toast.success("Account created! Please sign in with your credentials.");
+        toast.success("Account created successfully! Welcome!");
+        onClose();
+        navigate("/"); // Navigate to home page after successful signup
         setName("");
         setEmail("");
         setPassword("");
-        setIsSignIn(true);
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to create account");
