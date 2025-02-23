@@ -18,6 +18,7 @@ const Projects = () => {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
+  const [showCompleted, setShowCompleted] = useState(false);
   const [newProject, setNewProject] = useState({
     title: "",
     description: "",
@@ -101,56 +102,67 @@ const Projects = () => {
   const renderMyProjects = () => (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">My Projects</h2>
-        <Dialog open={isAddProjectOpen} onOpenChange={setIsAddProjectOpen}>
-          <DialogTrigger asChild>
-            <Button className="flex gap-2">
-              <PlusCircle className="h-4 w-4" />
-              Add Project
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Project</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <Input
-                placeholder="Project Title"
-                value={newProject.title}
-                onChange={e => setNewProject(prev => ({ ...prev, title: e.target.value }))}
-              />
-              <Textarea
-                placeholder="Brief Description"
-                value={newProject.description}
-                onChange={e => setNewProject(prev => ({ ...prev, description: e.target.value }))}
-              />
-              <Textarea
-                placeholder="Detailed Description"
-                value={newProject.detailed_description}
-                onChange={e => setNewProject(prev => ({ ...prev, detailed_description: e.target.value }))}
-              />
-              <Input
-                type="number"
-                placeholder="Budget"
-                value={newProject.budget}
-                onChange={e => setNewProject(prev => ({ ...prev, budget: e.target.value }))}
-              />
-              <Input
-                type="datetime-local"
-                value={newProject.deadline}
-                onChange={e => setNewProject(prev => ({ ...prev, deadline: e.target.value }))}
-              />
-              <Button onClick={handleAddProject}>Create Project</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <h2 className="text-2xl font-bold">
+          {showCompleted ? "Completed Projects" : "My Projects"}
+        </h2>
+        {!showCompleted && (
+          <Dialog open={isAddProjectOpen} onOpenChange={setIsAddProjectOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex gap-2">
+                <PlusCircle className="h-4 w-4" />
+                Add Project
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create New Project</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <Input
+                  placeholder="Project Title"
+                  value={newProject.title}
+                  onChange={e => setNewProject(prev => ({ ...prev, title: e.target.value }))}
+                />
+                <Textarea
+                  placeholder="Brief Description"
+                  value={newProject.description}
+                  onChange={e => setNewProject(prev => ({ ...prev, description: e.target.value }))}
+                />
+                <Textarea
+                  placeholder="Detailed Description"
+                  value={newProject.detailed_description}
+                  onChange={e => setNewProject(prev => ({ ...prev, detailed_description: e.target.value }))}
+                />
+                <Input
+                  type="number"
+                  placeholder="Budget"
+                  value={newProject.budget}
+                  onChange={e => setNewProject(prev => ({ ...prev, budget: e.target.value }))}
+                />
+                <Input
+                  type="datetime-local"
+                  value={newProject.deadline}
+                  onChange={e => setNewProject(prev => ({ ...prev, deadline: e.target.value }))}
+                />
+                <Button onClick={handleAddProject}>Create Project</Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
-      {projects.map(project => (
+      {(showCompleted ? projects.filter(p => p.status === 'completed') : projects).map(project => (
         <Card
           key={project.id}
           className="cursor-pointer hover:border-primary transition-colors"
-          onClick={() => navigate(`/projects/${project.id}`)}
+          onClick={() => {
+            if (project.status === 'completed') {
+              setShowCompleted(true);
+              navigate(`/projects/${project.id}`);
+            } else {
+              navigate(`/projects/${project.id}`);
+            }
+          }}
         >
           <CardHeader>
             <div className="flex justify-between items-center">
@@ -266,29 +278,42 @@ const Projects = () => {
       }}
     >
       <div className="container mx-auto py-8 space-y-8 bg-white/90 min-h-screen backdrop-blur-sm">
-        <div className="flex items-center mb-6">
+        <div className="flex items-center justify-between mb-6">
           <Button
             variant="ghost"
             className="flex items-center gap-2 hover:bg-gray-100"
-            onClick={() => navigate('/')}
+            onClick={() => {
+              if (showCompleted) {
+                setShowCompleted(false);
+              } else {
+                navigate('/');
+              }
+            }}
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Home
+            {showCompleted ? 'Back to Projects' : 'Back to Home'}
           </Button>
+          {!showCompleted && (
+            <Button
+              variant="outline"
+              onClick={() => setShowCompleted(true)}
+            >
+              View Completed Projects
+            </Button>
+          )}
         </div>
 
         {userRole === 'owner' && (
           <>
             {renderMyProjects()}
-            {renderCurrentProjects()}
-            {renderCompletedProjects()}
+            {!showCompleted && renderCurrentProjects()}
           </>
         )}
         {userRole === 'company' && (
           <>
-            {renderAvailableProjects()}
-            {renderCurrentProjects()}
-            {renderCompletedProjects()}
+            {!showCompleted && renderAvailableProjects()}
+            {!showCompleted && renderCurrentProjects()}
+            {showCompleted && renderCompletedProjects()}
           </>
         )}
       </div>
