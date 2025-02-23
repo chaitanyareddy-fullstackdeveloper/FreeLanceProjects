@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Projects from "./pages/Projects";
 import ProjectDetails from "./pages/ProjectDetails";
+import About from "./pages/About";
 import { useEffect, useState } from "react";
 import { supabase } from "./integrations/supabase/client";
 
@@ -43,6 +44,7 @@ const App = () => {
               path="/"
               element={session ? <Navigate to="/projects" /> : <Index />}
             />
+            <Route path="/about" element={<About />} />
             <Route
               path="/projects"
               element={session ? <Projects /> : <Navigate to="/" />}
