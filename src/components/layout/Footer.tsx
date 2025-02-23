@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -64,7 +65,7 @@ const Footer = () => {
             <Twitter size={24} />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/bijjam-venkata-chaitanya-kumar-reddy"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-600 hover:text-[#0A66C2] transition-colors"
