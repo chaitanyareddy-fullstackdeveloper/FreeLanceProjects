@@ -17,7 +17,7 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   const [session, setSession] = useState<any>(null);
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
+  const shouldFixNavbar = !['/', '/projects'].includes(location.pathname);
 
   useEffect(() => {
     // Check current session
@@ -37,10 +37,10 @@ const AppContent = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className={isHomePage ? '' : 'fixed top-0 left-0 right-0 z-50'}>
+      <div className={shouldFixNavbar ? 'fixed top-0 left-0 right-0 z-50' : ''}>
         <Navbar />
       </div>
-      <div className={isHomePage ? '' : 'pt-[72px]'}>
+      <div className={shouldFixNavbar ? 'pt-[72px]' : ''}>
         <Routes>
           <Route
             path="/"
