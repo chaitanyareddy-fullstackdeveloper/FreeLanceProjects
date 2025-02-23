@@ -171,8 +171,8 @@ const Projects = () => {
     if (showCompleted) {
       setShowCompleted(false);
     } else {
-      // Force navigation to the index page
-      window.location.href = '/';
+      navigate('/', { replace: true });
+      window.location.reload(); // Force a page reload to ensure proper state reset
     }
   };
 
