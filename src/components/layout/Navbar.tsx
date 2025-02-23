@@ -1,4 +1,3 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ContactInfo from "../contact/ContactInfo";
@@ -17,8 +16,7 @@ const Navbar = () => {
 
   const handleHomeClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    navigate('/');
-    window.location.reload(); // Force reload to ensure proper state reset
+    navigate('/', { replace: true });
   };
 
   return (
