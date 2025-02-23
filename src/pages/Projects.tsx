@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -166,6 +165,15 @@ const Projects = () => {
       budget: "",
       deadline: "",
     });
+  };
+
+  const handleBackClick = () => {
+    if (showCompleted) {
+      setShowCompleted(false);
+    } else {
+      // Force navigation to the index page
+      window.location.href = '/';
+    }
   };
 
   const renderMyProjects = () => (
@@ -351,13 +359,7 @@ const Projects = () => {
           <Button
             variant="ghost"
             className="flex items-center gap-2 hover:bg-gray-100"
-            onClick={() => {
-              if (showCompleted) {
-                setShowCompleted(false);
-              } else {
-                navigate('/');
-              }
-            }}
+            onClick={handleBackClick}
           >
             <ArrowLeft className="h-4 w-4" />
             {showCompleted ? 'Back to Projects' : 'Back to Home'}
