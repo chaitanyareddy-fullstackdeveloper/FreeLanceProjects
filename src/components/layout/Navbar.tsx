@@ -1,3 +1,4 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ContactInfo from "../contact/ContactInfo";
@@ -7,7 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { RocketIcon, GraduationCapIcon, CheckCircleIcon } from "lucide-react";
+import { RocketIcon, GraduationCapIcon, CheckCircleIcon, LogOutIcon } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [showContact, setShowContact] = useState(false);
@@ -17,6 +20,15 @@ const Navbar = () => {
   const handleHomeClick = (e: React.MouseEvent) => {
     e.preventDefault();
     navigate('/', { replace: true });
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate('/', { replace: true });
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   return (
@@ -89,6 +101,16 @@ const Navbar = () => {
                 />
               </button>
             </div>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className="flex items-center gap-2"
+            >
+              <LogOutIcon className="w-4 h-4" />
+              Logout
+            </Button>
           </nav>
         </div>
       </div>
