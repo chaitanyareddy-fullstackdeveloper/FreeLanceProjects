@@ -10,6 +10,7 @@ import Projects from "./pages/Projects";
 import ProjectDetails from "./pages/ProjectDetails";
 import { useEffect, useState } from "react";
 import { supabase } from "./integrations/supabase/client";
+import Navbar from "./components/layout/Navbar";
 
 const queryClient = new QueryClient();
 
@@ -38,21 +39,28 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route
-              path="/"
-              element={session ? <Navigate to="/projects" /> : <Index />}
-            />
-            <Route
-              path="/projects"
-              element={session ? <Projects /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/projects/:id"
-              element={session ? <ProjectDetails /> : <Navigate to="/" />}
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <div className="min-h-screen flex flex-col">
+            <div className="fixed top-0 left-0 right-0 z-50">
+              <Navbar />
+            </div>
+            <div className="pt-[72px]"> {/* Add padding to account for fixed navbar height */}
+              <Routes>
+                <Route
+                  path="/"
+                  element={session ? <Navigate to="/projects" /> : <Index />}
+                />
+                <Route
+                  path="/projects"
+                  element={session ? <Projects /> : <Navigate to="/" />}
+                />
+                <Route
+                  path="/projects/:id"
+                  element={session ? <ProjectDetails /> : <Navigate to="/" />}
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </div>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
