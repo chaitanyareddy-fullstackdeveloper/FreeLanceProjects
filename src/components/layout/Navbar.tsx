@@ -115,7 +115,7 @@ const Navbar = () => {
                 variant="ghost"
                 size="sm"
                 onClick={handleLogout}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 ml-4"
               >
                 <LogOut className="h-4 w-4" />
                 Logout
