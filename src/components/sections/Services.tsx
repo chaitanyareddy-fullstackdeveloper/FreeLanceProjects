@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../layout/Navbar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Services = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const Services = () => {
   return (
     <>
       <Navbar />
-      <div className="relative">
+      <div className="relative h-[calc(100vh-72px)]">
         <Button
           variant="ghost"
           size="icon"
@@ -51,18 +52,20 @@ const Services = () => {
         >
           <X className="h-6 w-6" />
         </Button>
-        <section className="bg-[rgba(255,160,122,1)] w-full overflow-hidden px-16 py-28 max-md:px-5 max-md:py-[100px]">
-          <h2 className="text-black text-[40px] font-bold leading-[48px] max-md:max-w-full">
-            Explore Our Comprehensive Range of Services Tailored for Your Needs
-          </h2>
-          <div className="w-full mt-20 max-md:mt-10">
-            <div className="flex w-full gap-[40px_48px] justify-center flex-wrap">
-              {services.map((service, index) => (
-                <ServiceCard key={index} {...service} />
-              ))}
+        <ScrollArea className="h-full">
+          <section className="bg-[rgba(255,160,122,1)] w-full overflow-hidden px-16 py-28 max-md:px-5 max-md:py-[100px]">
+            <h2 className="text-black text-[40px] font-bold leading-[48px] max-md:max-w-full">
+              Explore Our Comprehensive Range of Services Tailored for Your Needs
+            </h2>
+            <div className="w-full mt-20 max-md:mt-10">
+              <div className="flex w-full gap-[40px_48px] justify-center flex-wrap">
+                {services.map((service, index) => (
+                  <ServiceCard key={index} {...service} />
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </ScrollArea>
       </div>
     </>
   );
