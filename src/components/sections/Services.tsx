@@ -13,10 +13,6 @@ const Services = () => {
     navigate(-1);
   };
 
-  const handleProjectsClick = () => {
-    navigate('/projects');
-  };
-
   const services = [
     {
       image:
@@ -48,23 +44,14 @@ const Services = () => {
     <>
       <Navbar />
       <div className="relative h-[calc(100vh-72px)]">
-        <div className="absolute right-4 top-4 z-10 flex gap-4">
-          <Button
-            variant="default"
-            onClick={handleProjectsClick}
-            className="bg-purple-500 hover:bg-purple-600"
-          >
-            View Projects
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleBack}
-            className="hover:bg-gray-100"
-          >
-            <X className="h-6 w-6" />
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleBack}
+          className="absolute right-4 top-4 hover:bg-gray-100 z-10"
+        >
+          <X className="h-6 w-6" />
+        </Button>
         <ScrollArea className="h-full">
           <section className="bg-[rgba(255,160,122,1)] w-full overflow-hidden px-16 py-28 max-md:px-5 max-md:py-[100px]">
             <h2 className="text-black text-[40px] font-bold leading-[48px] max-md:max-w-full">
