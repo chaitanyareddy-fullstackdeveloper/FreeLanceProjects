@@ -3,14 +3,30 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import ContactInfo from "@/components/contact/ContactInfo";
 import Navbar from "@/components/layout/Navbar";
+import { X } from "lucide-react"; // Import X icon
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const About = () => {
   const [showContact, setShowContact] = useState(false);
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(-1);
+  };
 
   return (
     <>
       <Navbar />
-      <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <div className="relative container mx-auto px-4 py-12 max-w-4xl">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleBack}
+          className="absolute right-4 top-0 hover:bg-gray-100"
+        >
+          <X className="h-6 w-6" />
+        </Button>
+        
         <div className="space-y-12">
           {/* Header Section */}
           <div className="text-center space-y-4">
