@@ -40,10 +40,7 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route
-              path="/"
-              element={session ? <Navigate to="/projects" /> : <Index />}
-            />
+            <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route
               path="/projects"
