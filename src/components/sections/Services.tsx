@@ -1,6 +1,17 @@
+
 import ServiceCard from "../ui/ServiceCard";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../layout/Navbar";
 
 const Services = () => {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   const services = [
     {
       image:
@@ -29,18 +40,31 @@ const Services = () => {
   ];
 
   return (
-    <section className="bg-[rgba(255,160,122,1)] w-full overflow-hidden px-16 py-28 max-md:px-5 max-md:py-[100px]">
-      <h2 className="text-black text-[40px] font-bold leading-[48px] max-md:max-w-full">
-        Explore Our Comprehensive Range of Services Tailored for Your Needs
-      </h2>
-      <div className="w-full mt-20 max-md:mt-10">
-        <div className="flex w-full gap-[40px_48px] justify-center flex-wrap">
-          {services.map((service, index) => (
-            <ServiceCard key={index} {...service} />
-          ))}
-        </div>
+    <>
+      <Navbar />
+      <div className="relative">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleBack}
+          className="absolute right-4 top-4 hover:bg-gray-100 z-10"
+        >
+          <X className="h-6 w-6" />
+        </Button>
+        <section className="bg-[rgba(255,160,122,1)] w-full overflow-hidden px-16 py-28 max-md:px-5 max-md:py-[100px]">
+          <h2 className="text-black text-[40px] font-bold leading-[48px] max-md:max-w-full">
+            Explore Our Comprehensive Range of Services Tailored for Your Needs
+          </h2>
+          <div className="w-full mt-20 max-md:mt-10">
+            <div className="flex w-full gap-[40px_48px] justify-center flex-wrap">
+              {services.map((service, index) => (
+                <ServiceCard key={index} {...service} />
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
+    </>
   );
 };
 
