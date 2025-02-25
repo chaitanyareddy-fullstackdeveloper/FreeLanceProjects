@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -6,6 +5,13 @@ import { useState } from "react";
 
 const Footer = () => {
   const [showContact, setShowContact] = useState(false);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
 
   return (
     <footer className="bg-[rgba(235,235,235,1)] flex w-full flex-col overflow-hidden items-stretch px-16 py-20 max-md:px-5">
@@ -20,9 +26,12 @@ const Footer = () => {
         </div>
 
         <nav className="flex w-full gap-8 text-sm text-black font-semibold justify-center flex-wrap mt-8">
-          <Link to="/" className="hover:text-gray-600 transition-colors">
+          <button 
+            onClick={scrollToTop}
+            className="hover:text-gray-600 transition-colors"
+          >
             Home Page
-          </Link>
+          </button>
           <Link to="/about" className="hover:text-gray-600 transition-colors">
             About Us
           </Link>
