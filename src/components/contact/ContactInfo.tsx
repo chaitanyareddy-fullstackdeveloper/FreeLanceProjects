@@ -35,10 +35,10 @@ const ContactInfo = ({ isOpen, onClose }: ContactInfoProps) => {
             <Mail className="h-5 w-5 text-gray-500" />
             <div className="flex flex-col">
               <a
-                href="mailto:cssoftwaresolutions@gmail.com"
+                href="mailto:sidhu@gmail.com"
                 className="text-lg hover:text-blue-600"
               >
-                cssoftwaresolutions@gmail.com
+                sidhu@gmail.com
               </a>
               <a
                 href="mailto:chaitanyakumarreddybijjum@gmail.com"
